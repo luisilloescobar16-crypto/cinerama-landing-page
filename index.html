@@ -1,0 +1,349 @@
+import React, { useState, useEffect } from 'react';
+import { Film, Clock, Gift, MapPin, Users, Check, Copy, Share2, Star } from 'lucide-react';
+
+export default function CineramaLanding() {
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [copied, setCopied] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(72);
+
+  useEffect(() => {
+    if (submitted && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 36000);
+      return () => clearInterval(timer);
+    }
+  }, [submitted, timeLeft]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.name && formData.email) {
+      setSubmitted(true);
+    }
+  };
+
+  const copyCode = () => {
+    navigator.clipboard.writeText('CINERAMA2X1');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-red-900 to-black text-white">
+        <div className="bg-black/30 backdrop-blur-sm py-4 px-6">
+          <img src="https://i.imgur.com/cinerama-logo.png" alt="Cinerama" className="h-12" onError={(e) => {e.target.style.display='none'; e.target.nextSibling.style.display='block'}} />
+          <div className="text-2xl font-bold" style={{display: 'none'}}>CINERAMA</div>
+        </div>
+
+        <div className="container mx-auto px-4 py-12 max-w-4xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-500 rounded-full mb-6">
+              <Check className="w-10 h-10" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              ¡Bienvenido al Club VIP, {formData.name}! 🎬
+            </h1>
+            <p className="text-xl text-purple-200">
+              Tu código exclusivo está listo para usar
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-8 mb-8 shadow-2xl">
+            <div className="text-center">
+              <p className="text-black text-sm font-semibold mb-2">TU CÓDIGO 2x1</p>
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <code className="text-4xl md:text-5xl font-bold text-black tracking-wider">
+                  CINERAMA2X1
+                </code>
+                <button
+                  onClick={copyCode}
+                  className="bg-black text-white p-3 rounded-lg hover:bg-gray-800 transition"
+                >
+                  {copied ? <Check className="w-6 h-6" /> : <Copy className="w-6 h-6" />}
+                </button>
+              </div>
+              <p className="text-black font-medium">
+                ✨ Válido hasta el {new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString('es-PE')}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-red-600 rounded-xl p-6 mb-8 text-center">
+            <Clock className="w-8 h-8 mx-auto mb-3" />
+            <p className="text-2xl font-bold">⏰ Tu descuento expira en {Math.floor(timeLeft/24)}d {timeLeft%24}h</p>
+            <p className="text-sm mt-2">¡No dejes pasar esta oportunidad!</p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 className="text-2xl font-bold mb-6 text-center">📋 Cómo Usar Tu Código</h2>
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center font-bold">1</div>
+                <div>
+                  <h3 className="font-semibold text-lg">Compra en taquilla o web</h3>
+                  <p className="text-purple-200">Presenta tu código al momento de pagar</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center font-bold">2</div>
+                <div>
+                  <h3 className="font-semibold text-lg">Elige tu película favorita</h3>
+                  <p className="text-purple-200">Funciona en 2D, 3D y todas las funciones</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center font-bold">3</div>
+                <div>
+                  <h3 className="font-semibold text-lg">Disfruta con quien quieras</h3>
+                  <p className="text-purple-200">Paga 1 entrada y lleva a alguien especial gratis</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 className="text-2xl font-bold mb-6 text-center">🎬 Cartelera de Esta Semana</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {['Deadpool & Wolverine', 'Intensamente 2', 'Bad Boys 4'].map((movie, i) => (
+                <div key={i} className="bg-black/30 rounded-lg p-4 hover:bg-black/50 transition">
+                  <div className="bg-gradient-to-br from-purple-600 to-pink-600 h-40 rounded mb-3 flex items-center justify-center">
+                    <Film className="w-16 h-16" />
+                  </div>
+                  <h3 className="font-bold text-lg">{movie}</h3>
+                  <div className="flex items-center gap-1 text-yellow-400 mt-2">
+                    <Star className="w-4 h-4 fill-current" />
+                    <span className="text-sm">4.{8-i}/5</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 className="text-2xl font-bold mb-6 flex items-center justify-center gap-3">
+              <MapPin className="w-7 h-7" />
+              Nuestras Salas en Nuevo Chimbote
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-black/30 p-6 rounded-xl">
+                <h3 className="font-bold text-xl mb-2">🎪 Cinerama Megaplaza</h3>
+                <p className="text-purple-200 mb-3">Av. Pacífico 1400, Nuevo Chimbote</p>
+                <p className="text-sm">Lun-Dom: 11:00 AM - 11:00 PM</p>
+              </div>
+              <div className="bg-black/30 p-6 rounded-xl">
+                <h3 className="font-bold text-xl mb-2">🎪 Cinerama Real Plaza</h3>
+                <p className="text-purple-200 mb-3">Av. Los Pescadores s/n, Nuevo Chimbote</p>
+                <p className="text-sm">Lun-Dom: 10:30 AM - 10:30 PM</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 mb-8 text-center">
+            <Share2 className="w-12 h-12 mx-auto mb-4" />
+            <h2 className="text-3xl font-bold mb-4">🎁 Invita y Gana Más</h2>
+            <p className="text-lg mb-6">
+              Por cada 3 amigos que se registren con tu link, ganas <span className="font-bold text-yellow-300">1 entrada GRATIS</span>
+            </p>
+            <div className="bg-white/20 rounded-lg p-4 mb-4">
+              <p className="text-sm mb-2">Tu link exclusivo:</p>
+              <code className="text-sm bg-black/30 px-4 py-2 rounded">
+                cinerama.pe/ref/{formData.email.split('@')[0]}
+              </code>
+            </div>
+            <button className="bg-white text-purple-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition">
+              Compartir con Amigos
+            </button>
+          </div>
+
+          <div className="text-center bg-blue-600/30 rounded-xl p-6">
+            <p className="text-lg">
+              📧 Hemos enviado tu código a <span className="font-bold">{formData.email}</span>
+            </p>
+            <p className="text-sm text-purple-200 mt-2">
+              (Revisa spam si no lo ves en 5 minutos)
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black text-white">
+      <div className="bg-red-600 text-center py-3 px-4 font-bold text-sm md:text-base">
+        ⏰ ¡OFERTA LIMITADA! Solo quedan 47 códigos disponibles hoy
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-2 gap-8 items-center max-w-7xl mx-auto">
+          <div className="space-y-6">
+            <img src="https://i.imgur.com/cinerama-logo.png" alt="Cinerama" className="h-16 w-auto" onError={(e) => {e.target.style.display='none'; e.target.nextSibling.style.display='block'}} />
+            <div className="text-4xl font-bold" style={{display: 'none'}}>CINERAMA</div>
+            
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+              El Plan Perfecto<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500">
+                Comienza Aquí
+              </span>
+            </h1>
+
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="bg-yellow-400 text-black p-3 rounded-full flex-shrink-0">
+                  <Gift className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-1">Código 2x1 Inmediato</h3>
+                  <p className="text-purple-200">Paga 1 entrada, van 2 personas. <span className="text-yellow-300 font-bold">Ahorra hasta S/16</span></p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="bg-purple-400 text-black p-3 rounded-full flex-shrink-0">
+                  <Film className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-1">15% en Combo Dulcería</h3>
+                  <p className="text-purple-200">Canchita + Gaseosa desde <span className="line-through">S/18</span> <span className="text-green-400 font-bold">S/15.30</span></p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="bg-pink-400 text-black p-3 rounded-full flex-shrink-0">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-1">Acceso VIP 24h Antes</h3>
+                  <p className="text-purple-200">Reserva los mejores asientos antes que nadie</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-green-600/20 border-2 border-green-400 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <Users className="w-8 h-8 text-green-400" />
+                <div>
+                  <p className="text-2xl font-bold text-green-400">1,247 personas</p>
+                  <p className="text-sm">se registraron esta semana</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <div className="flex -space-x-2">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-white" />
+                  ))}
+                </div>
+                <p className="text-sm self-center text-purple-200">+1,242 más</p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="bg-white/10 backdrop-blur rounded-lg p-4">
+                <div className="flex gap-1 text-yellow-400 mb-2">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                </div>
+                <p className="text-sm mb-2">"¡El 2x1 es real! Fui con mi esposa y ahorramos S/16. Lo mejor de Nuevo Chimbote."</p>
+                <p className="text-xs text-purple-300">- Carlos M., Nuevo Chimbote</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur rounded-lg p-4">
+                <div className="flex gap-1 text-yellow-400 mb-2">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                </div>
+                <p className="text-sm mb-2">"Los asientos VIP son increíbles y con el descuento en dulcería, vale totalmente la pena."</p>
+                <p className="text-xs text-purple-300">- María G., Chimbote</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:sticky lg:top-8">
+            <div className="bg-black/40 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border-2 border-purple-500">
+              <div className="text-center mb-6">
+                <div className="inline-block bg-red-600 text-white px-4 py-1 rounded-full text-sm font-bold mb-4">
+                  🔥 ÚLTIMA OPORTUNIDAD HOY
+                </div>
+                <h2 className="text-3xl font-bold mb-2">Regístrate y Recibe:</h2>
+              </div>
+
+              <div className="space-y-3 mb-6 bg-white/5 rounded-xl p-4">
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>Código 2x1 instantáneo</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>15% descuento en consumo</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span>Acceso VIP a cartelera</span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Nombre Completo *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="w-full px-4 py-3 rounded-lg bg-white/10 border-2 border-purple-500 focus:border-yellow-400 focus:outline-none text-white placeholder-purple-300"
+                    placeholder="Ej: Juan Pérez"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    className="w-full px-4 py-3 rounded-lg bg-white/10 border-2 border-purple-500 focus:border-yellow-400 focus:outline-none text-white placeholder-purple-300"
+                    placeholder="tu@email.com"
+                  />
+                </div>
+
+                <button
+                  onClick={handleSubmit}
+                  className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 rounded-lg text-lg hover:from-yellow-500 hover:to-orange-600 transition transform hover:scale-105 shadow-lg"
+                >
+                  🎁 QUIERO MI CÓDIGO 2X1 AHORA
+                </button>
+
+                <p className="text-xs text-center text-purple-300">
+                  🔒 Tus datos están seguros. Sin spam. Política de Privacidad
+                </p>
+              </div>
+
+              <div className="mt-6 text-center">
+                <div className="bg-yellow-400/20 border border-yellow-400 rounded-lg p-3">
+                  <p className="text-sm font-semibold text-yellow-300">
+                    ⚡ Se están acabando: Solo 47 códigos hoy
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 text-center bg-green-600/20 rounded-xl p-4 border border-green-400">
+              <p className="font-bold mb-1">✅ 100% Gratis - Sin Tarjeta</p>
+              <p className="text-sm text-green-200">Cancela cuando quieras</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-black/50 py-8 mt-12">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-purple-300 text-sm">
+            © 2025 Cinerama Nuevo Chimbote - La mejor experiencia cinematográfica
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
